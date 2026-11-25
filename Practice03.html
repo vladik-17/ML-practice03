@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice03</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg-color: var(--vscode-editor-background, #ffffff);
+            --text-color: var(--vscode-editor-foreground, #1a1a1b);
+            --heading-color: var(--vscode-editor-foreground, #0f172a);
+            --secondary-text: var(--vscode-descriptionForeground, #64748b);
+            --accent-color: var(--vscode-textLink-foreground, #3b82f6);
+            --code-bg: var(--vscode-textCodeBlock-background, rgba(241, 245, 249, 0.4));
+            --border-color: var(--vscode-widget-border, #e2e8f0);
+            --header-bg: var(--vscode-editor-background, #ffffff);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.75;
+            color: var(--text-color);
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 5rem 2rem 3rem;
+            background-color: var(--bg-color);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .export-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 0.75rem 2rem; background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: flex-end; gap: 0.75rem;
+            backdrop-filter: blur(8px); display: none;
+        }
+
+        .btn {
+            background: var(--accent-color); color: white; border: none;
+            padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem;
+            font-weight: 500; cursor: pointer; transition: opacity 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .btn:hover { opacity: 0.9; }
+
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; color: var(--heading-color); font-weight: 700; margin-top: 2rem; }
+        h1 { font-size: 2.25rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
+        
+        pre { background: var(--code-bg); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; margin: 1.5rem 0; }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; padding: 0.2rem 0.4rem; border-radius: 6px; background-color: var(--code-bg); }
+        
+        .mermaid { background: white; padding: 1rem; border-radius: 12px; margin: 1.5rem 0; display: flex; justify-content: center; border: 1px solid var(--border-color); }
+        svg { max-width: 100% !important; height: auto !important; }
+
+        @media print { .export-header { display: none; } body { padding: 0; } }
+    </style>
+</head>
+<body>
+    <div class="export-header">
+        <button class="btn" onclick="exportFile('html')">Export HTML</button>
+        <button class="btn" onclick="exportFile('pdf')">Export PDF</button>
+        <button class="btn" onclick="exportFile('docx')">Export DOCX</button>
+    </div>
+    <div class="content"><h1>Практическая работа № 3</h1>
+<p><strong>Дисциплина:</strong> Методы и алгоритмы машинного обучения</p>
+<p><strong>Тема:</strong> Десктопное приложение для ML-классификации/регрессии на PySide6 с сигнал-слот взаимодействием </p>
+<p><strong>Форма отчёта:</strong> репозиторий или архив с <code>README.md</code> + файл docx (можно сделать в Pandoc)</p>
+<h2>Цель работы</h2>
+<p>Освоить на практике построение десктопного ML-приложения на <code>PySide6</code>, в котором:</p>
+<ol>
+<li>ML-модель (классификация или регрессия) изолирована в отдельном модуле и не зависит от GUI;</li>
+<li>длительный ML-вызов выполняется в фоновом потоке <code>QThread</code>;</li>
+<li>результат возвращается в GUI через пользовательский сигнал (<code>Signal</code>) и слот (<code>Slot</code>), без блокировки интерфейса.</li>
+</ol>
+<p><strong>Базовая практика:</strong> возьмите любую лабораторную работу из курса (построение 1-2 моделей для маленького датасета). Желательно, в которой вы обучали модель классификации или регрессии на <code>scikit-learn</code>. Сохранённую модель (<code>joblib</code>) используйте как артефакт для этого задания.</p>
+<h2>1. Формируемые навыки</h2>
+<table>
+<thead>
+<tr>
+<th>Код</th>
+<th>Навык</th>
+<th>Индикатор</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ПК-1</td>
+<td>Разработка программного обеспечения для задач ИИ</td>
+<td>Проектирование слоистой архитектуры</td>
+</tr>
+<tr>
+<td>ПК-2</td>
+<td>Применение библиотек ML</td>
+<td>Загрузка и использование обученной модели</td>
+</tr>
+<tr>
+<td>ПК-3</td>
+<td>Разработка пользовательских интерфейсов</td>
+<td>Реализация GUI на PySide6 с сигнал-слот</td>
+</tr>
+</tbody></table>
+<h2>2. Требования к структуре проекта</h2>
+<p>Проект должен содержать слои архитектуры. ML-ядро и сервис <strong>не должны импортировать</strong> <code>PySide6</code>.</p>
+<p>Примерная структура (ориентироваться, но спроектировать самостоятельно):</p>
+<pre><code>ml_app/
+├── config.py
+├── requirements.txt
+├── models/
+│   └── classifier.joblib
+├── ml/
+│   ├── __init__.py
+│   ├── model_loader.py
+│   └── predictor.py
+├── services/
+│   ├── __init__.py
+│   └── prediction_service.py
+└── desktop/
+    ├── __init__.py
+    ├── main.py
+    ├── main_window.py
+    └── worker.py
+</code></pre>
+<p><strong>Файл <code>requirements.txt</code></strong> должен фиксировать версии:</p>
+<pre><code class="language-text">scikit-learn==1.5.*
+joblib==1.4.*
+PySide6==6.7.*
+</code></pre>
+<h2>3. Задания</h2>
+<h3>3.1. Обязательная часть</h3>
+<h4>Задание 1. Каркас проекта и ML-ядро</h4>
+<ol>
+<li>Создайте структуру каталогов из раздела 3.</li>
+<li>Перенесите обученную в предыдущей практике модель в <code>models/</code> через <code>joblib.dump()</code>.</li>
+<li>Реализуйте <code>ml/predictor.py</code> с классом <code>Predictor</code>, который:<ul>
+<li>загружает модель в конструкторе;</li>
+<li>проверяет количество признаков (<code>n_features_in_</code>);</li>
+<li>возвращает словарь с полем <code>prediction</code> и, если доступно, <code>proba</code>.</li>
+</ul>
+</li>
+<li>Реализуйте <code>services/prediction_service.py</code> с классом <code>PredictionService</code>, который парсит строку вида <code>&quot;5.1, 3.5, 1.4, 0.2&quot;</code> и возвращает строку-результат.</li>
+</ol>
+<p><strong>Критерии защиты:</strong> </p>
+<ol>
+<li>модули <code>ml/</code> и <code>services/</code> не содержат <code>import PySide6</code>. </li>
+<li>У приложения есть структура.</li>
+</ol>
+<h4>Задание 2. Главное окно</h4>
+<p>Реализуйте <code>desktop/main_window.py</code> с классом <code>MainWindow(QMainWindow)</code>, содержащим:</p>
+<table>
+<thead>
+<tr>
+<th>Виджет</th>
+<th>Назначение</th>
+<th>Настройка</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>QLineEdit</code></td>
+<td>Ввод признаков</td>
+<td><code>setPlaceholderText(&quot;Признаки через запятую&quot;)</code></td>
+</tr>
+<tr>
+<td><code>QPushButton</code> «Предсказать»</td>
+<td>Запуск ML</td>
+<td><code>clicked.connect(on_predict_clicked)</code></td>
+</tr>
+<tr>
+<td><code>QPushButton</code> «Очистить»</td>
+<td>Сброс полей</td>
+<td><code>clicked.connect(on_clear_clicked)</code></td>
+</tr>
+<tr>
+<td><code>QLabel</code></td>
+<td>Результат</td>
+<td><code>setText(&quot;Результат появится здесь&quot;)</code></td>
+</tr>
+</tbody></table>
+<p>Компоновка — через <code>QVBoxLayout</code> внутри <code>QWidget</code>, установленного как <code>setCentralWidget()</code>.</p>
+<h4>Задание 3. Фоновый поток и сигналы</h4>
+<ol>
+<li>Реализуйте <code>desktop/worker.py</code> с классом <code>PredictWorker(QThread)</code>, содержащим:<ul>
+<li>сигналы <code>finished_ok = Signal(str)</code> и <code>failed = Signal(str)</code>;</li>
+<li>переопределённый <code>run()</code>, который вызывает <code>PredictionService.run()</code> и испускает соответствующий сигнал.</li>
+</ul>
+</li>
+<li>В <code>MainWindow.on_predict_clicked()</code>:<ul>
+<li>блокируйте кнопку «Предсказать» (<code>setEnabled(False)</code>);</li>
+<li>устанавливайте <code>QLabel</code> в состояние «Вычисление...»;</li>
+<li>создавайте <code>PredictWorker</code>, соединяйте его сигналы со слотами <code>on_success</code> и <code>on_error</code>;</li>
+<li>запускайте поток через <code>start()</code>.</li>
+</ul>
+</li>
+<li>В слотах <code>on_success</code> и <code>on_error</code> обновляйте <code>QLabel</code> и разблокируйте кнопку.</li>
+</ol>
+<p><strong>Критерии защиты:</strong> во время выполнения ML-вызова окно можно перетаскивать, кнопка недоступна, по завершении — результат отображается и кнопка снова активна.</p>
+<h4>Задание 4. Проверка отзывчивости</h4>
+<ol>
+<li>Временно добавьте в <code>PredictWorker.run()</code> задержку <code>time.sleep(2)</code> перед вызовом сервиса.</li>
+<li>Запустите приложение и убедитесь, что интерфейс не «замерзает»: окно перемещается, кнопка визуально заблокирована.</li>
+<li>Уберите задержку.</li>
+</ol>
+<h4>Задание 5. Обработка ошибок</h4>
+<p>Проверьте, что приложение не падает и выдаёт понятное сообщение в <code>QLabel</code> в случаях:</p>
+<ul>
+<li>нечисловой ввод (<code>&quot;abc&quot;</code>);</li>
+<li>неверное количество признаков (<code>&quot;1, 2&quot;</code> при <code>n_features=4</code>);</li>
+<li>пустая строка.</li>
+</ul>
+<h3>4.2. Дополнительная часть (на оценку «отлично»)</h3>
+<h4>Задание 6. Выбор модели</h4>
+<p>Добавьте <code>QComboBox</code> с двумя моделями (например, «Логистическая регрессия» и «Random Forest»). При смене значения (<code>currentIndexChanged</code>) сигнал должен переключать <code>Predictor</code> в <code>PredictionService</code>.</p>
+<h4>Задание 7. Визуализация вероятности</h4>
+<p>Для классификации расширьте <code>Predictor.predict()</code> так, чтобы он возвращал <code>proba</code>. Передавайте вероятность через дополнительный сигнал <code>Signal(float)</code> в <code>QProgressBar</code> (0–100 %).</p>
+<h2>4. Критерии оценивания</h2>
+<table>
+<thead>
+<tr>
+<th>Критерий</th>
+<th>Баллы</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Корректная структура по слоям, ML-ядро не зависит от GUI</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Работающий <code>QThread</code> + сигнал-слот, интерфейс не блокируется</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Обработка ошибок ввода</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Читаемость кода, отсутствие дублирования</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Дополнительная часть (ComboBox / прогресс-бар / сравнение с ботом)</td>
+<td>2–3</td>
+</tr>
+<tr>
+<td><strong>Итого</strong></td>
+<td><strong>8–9</strong></td>
+</tr>
+</tbody></table>
+<h2>5. Форма отчёта</h2>
+<p>Отчёт оформляется в виде файла readme:</p>
+<ol>
+<li><strong>О разработчике</strong>: Информация о разработчике ПО.</li>
+<li><strong>Описание модели:</strong> алгоритм, датасет, метрика качества на тесте (accuracy / RMSE).</li>
+<li><strong>Запуск и установка:</strong> как установить и запустить программу.</li>
+<li><strong>Фрагмент кода</strong>: тот, что нужно объяснить пользователю.</li>
+<li><strong>Вывод</strong>.</li>
+</ol>
+<p><strong>Срок сдачи:</strong> 02.12.2026.<br><strong>Формат сдачи:</strong> ссылка на репозиторий или архив с <code>README.md</code>.</p>
+</div>
+    <script>
+        const vscode = acquireVsCodeApi();
+        function exportFile(format) { vscode.postMessage({ command: 'export', format: format }); }
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+        // Help Puppeteer know when we are done
+        window.addEventListener('load', () => {
+            mermaid.run().then(() => {
+                document.body.classList.add('mermaid-rendered');
+            });
+        });
+    </script>
+</body>
+</html>
